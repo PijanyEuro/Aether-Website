@@ -1,0 +1,65 @@
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .header-box{
+            background-color: grey;
+            color: black;
+        }
+        
+        .main-container{
+            background-color: blue;
+            color: white;
+        }
+
+        .footer{
+            background-color: pink;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="main-container">
+        <center>
+            <div class="header-box">
+                <div>
+                    {% if user.is_authenticated %}
+                        <a style="color:green;">Logged in as: [ {{ request.user }} ] </a>
+                    {% else %}
+                        <a>You are Not Logged in<a>
+                    {% endif%}
+
+
+                    <div>
+                        {% if messages %}
+                        {% for message in messages %}
+                           <p class="login-message"> {{ message }} </p>
+                        {% endfor %}
+                        {% endif %}
+                    <div/>
+                <div/>
+                <h1>David's Website<h1/>
+                <a href="{% url 'main' %}">Home<a/>
+                <a href="{% url 'login_user' %}">Login<a/>
+                <a href="{% url 'logout_user' %}">Logout<a/>
+                <a href="">Home<a/>
+            </div>
+
+            <div class="main-container">
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <div class="footer">
+                <p>This is the footer!<p/>
+            </div>
+        </center>
+    </div>
+</body>
+</html>
