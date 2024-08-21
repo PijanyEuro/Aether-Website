@@ -1,25 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+<main class="form-signin w-100 m-auto" style="max-width: 25rem; border: none !important;">
+  {% if messages %}
+    {% for message in messages %}
+      <p class="login-message">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+  
+  <form action="" method="POST">
+    {% csrf_token %}
+    
+    <!--<img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">-->
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+      <label for="username">Username</label>
+    </div>
+    
+    <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+      <label for="password">Password</label>
+    </div>
 
-<div style="max-width: 25rem; border: none !important;">
-    {% if messages %}
-                {% for message in messages %}
-                   <p class="login-message"> {{ message }} </p>
-                {% endfor %}
-    {% endif %}
-    <form action="" method=POST>
-        {% csrf_token %}
-        
-            <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" id="username">
-            </div>
-            <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
 
+    
+    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
+  </form>
+</main>
 {% endblock %}
