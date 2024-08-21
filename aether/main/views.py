@@ -6,12 +6,17 @@ from django.contrib.auth.decorators import login_required
 from functools import wraps
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, get_object_or_404, redirect
+from .models import SeasonalContent
+from datetime import date
 # Create your views here.
 
 
 
 def main(request):
-        return render(request, 'index.html')
+        
+    today = date.today()
+    SeasonalContentEntries = SeasonalContent.objects.filter(start_date__lte=today).filter(end_date__gte=today)
+    return render(request, 'index.html', {'SeasonalContentEntries': SeasonalContentEntries})
 
 
 from django.shortcuts import render, redirect
