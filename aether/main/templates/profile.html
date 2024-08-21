@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <p>This is the profile Page<p/>
+    </br>
+    <p>Welcome, {{ request.user }}!<p/>
+    </br>
+    <p>You Have: {{user.profile.essence_count}} Essence.<p/>
+{% endblock %}

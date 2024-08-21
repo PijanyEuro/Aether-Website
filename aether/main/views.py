@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from functools import wraps
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 
@@ -29,7 +33,7 @@ def login_user(request):
         else:
             # Return an 'invalid login' error message.
             messages.success(request, "There was an error logging in, try again....")
-            return redirect('login')
+            return redirect('main')
     else:
         return render(request, 'authenticate/login.html', {})
 
@@ -37,3 +41,20 @@ def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect('main')
+
+def login_required_with_message(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.success(request, "You must be logged in to view this page.")
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@login_required_with_message
+def profile(request):
+     
+     profile = request.user.profile
+     return render(request, 'profile.html', {'profile': profile})
+
+     
