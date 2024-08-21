@@ -1,7 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Welcome to the Aether!</h1>
 
-    <p>Lorem ipsum odor amet, consectetuer adipiscing elit.</p>
-    <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Himenaeos ornare ullamcorper arcu purus est inceptos morbi.</p>
+<!-- Features Section -->
+<div class="feature-section" style="border-left: none; border-right: none;">
+    <!--<p><span class="joesworldonline-text">Some Really Cool text goes here</span></p>-->
+
+    <!-- Grid container -->
+    <div class="seasonal-content-grid">
+        {% for SeasonalContent in SeasonalContentEntries %}
+        <!-- Grid item -->
+        <div class="seasonal-content-box">
+            <h2 class="seasonal-content-title">{{ SeasonalContent.title }}</h2>
+            <div>{{ SeasonalContent.content|safe }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Grid container styles */
+    .seasonal-content-grid {
+        max-width: 100rem;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr; /* Single column by default */
+        gap: 20px; /* Space between items */
+        justify-content: center; /* Center the items horizontally */
+        align-content: start; /* Align content to the top */
+    }
+
+    /* Responsive layout */
+    @media (min-width: 600px) {
+        .seasonal-content-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+        }
+    }
+
+    @media (min-width: 900px) {
+        .seasonal-content-grid {
+            grid-template-columns: repeat(2, 1fr); /* Limit to 2 columns on larger screens */
+            justify-content: start; /* Align to start when there are enough items */
+        }
+    }
+
+    /* Grid item (seasonal content box) styles */
+    .seasonal-content-box {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        min-height: 150px;
+    }
+</style>
+
 {% endblock %}
