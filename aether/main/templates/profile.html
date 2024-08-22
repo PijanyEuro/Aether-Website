@@ -5,9 +5,9 @@
         <div class="profile-info">
             <h2>Profile Information</h2>
             {% if profile.profile_pic %}
-                <img src="{{ profile.profile_pic.url }}" alt="{{ profile.name }}">
+                <img src="{{ profile.profile_pic.url }}" alt="{{ profile.profile_name }}">
             {% endif %}
-            <p>Name: {{ profile.name }}</p>
+            <p>Name: {{ profile.profile_name }}</p>
             <p>Essence Count: {{ profile.essence_count }}</p>
         </div>
         
@@ -20,7 +20,7 @@
                             {% if character.top_down_photo %}
                                 <img src="{{ character.top_down_photo.url }}" alt="{{ character.name }}">
                             {% endif %}
-                            <p>Name: {{ character.name }}</p>
+                            <p>Name: {{ character.character_name }}</p>
                             <p>Class: {{ character.character_class }}</p>
                             <p>Level: {{ character.level }}</p>
                             <p>Strength: {{ character.strength }}</p>
@@ -45,9 +45,9 @@
                     {% for item in items %}
                         <li class="item">
                             {% if item.image %}
-                                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                                <img src="{{ item.image.url }}" alt="{{ item.item_name }}">
                             {% endif %}
-                            <p>Name: {{ item.name }}</p>
+                            <p>Name: {{ item.item_name }}</p>
                             <p>Description: {{ item.description }}</p>
                         </li>
                     {% endfor %}
