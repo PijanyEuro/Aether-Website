@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Edit Profile</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <h2>Profile Information</h2>
+    {{ profile_form.as_p }}
+
+    <h2>Characters</h2>
+    {% for form in character_forms %}
+        {{ form.as_p }}
+    {% endfor %}
+
+    <h2>Items</h2>
+    {% for form in item_forms %}
+        {{ form.as_p }}
+    {% endfor %}
+
+    <button type="submit">Save Changes</button>
+</form>
+
+{% endblock %}
