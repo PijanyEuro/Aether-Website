@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h1>{{ profile.user.username }}'s Inventory</h1>
+
+    <div class="items mb-5">
+        <h2>Items</h2>
+        {% if items %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="img-thumbnail" style="max-width: 100px;">
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.item_name }}</td>
+                                <td>{{ item.description }}</td>
+                                <td>
+                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No items found.</p>
+        {% endif %}
+    </div>
+
+    <div class="border border-dark p-3" style="max-width: 200px;">
+        <h2>Add an item</h2>
+        <a href="{% url 'add_item' %}" class="btn btn-warning">Add Item</a>
+    </div>
+</div>
+
+{% endblock %}

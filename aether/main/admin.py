@@ -11,8 +11,9 @@ class CharacterInline(admin.TabularInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    fields = ('user', 'profile_pic', 'name', 'essence_count')  # Exclude inventory and characters here
+    fields = ('user', 'profile_pic', 'profile_name', 'essence_count')  # Use profile_name instead of name
     inlines = [ItemInline, CharacterInline]
+
 
 admin.site.register(Member)
 admin.site.register(Item)

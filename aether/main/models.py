@@ -30,18 +30,32 @@ class Item(models.Model):
     set = models.ForeignKey('Set', on_delete=models.CASCADE, related_name='items_in_set', blank=True, null=True)
 
     def __str__(self):
-        return self.name or 'Unnamed Item'
+        return self.item_name or 'Unnamed Item'
+
+from django.db import models
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
     profile_name = models.CharField(max_length=100, blank=True)
     essence_count = models.IntegerField(default=0)
-    inventory = models.ManyToManyField(Item, related_name='profiles_with_item', blank=True)
+    inventory = models.ManyToManyField('Item', related_name='profiles_with_item', blank=True)
     characters = models.ManyToManyField('Character', related_name='profiles_with_character', blank=True)
 
     def __str__(self):
-        return self.user.username # Set a default username
+        return self.user.username  # Adjusted to use username
+
+    def save(self, *args, **kwargs):
+        # Set profile_name to username if it's empty
+        if not self.profile_name:
+            self.profile_name = self.user.username
+        super().save(*args, **kwargs)
+
+
+
+
+
 
 class Character(models.Model):
     character_name = models.CharField(max_length=100, blank=True, null=True)
@@ -61,7 +75,7 @@ class Character(models.Model):
     bio = models.TextField(blank=True, null=True)
     
     def __str__(self):
-        return self.name or 'Unnamed Character'
+        return self.character_name or 'Unnamed Character'
 
 class Set(models.Model):
     set_name = models.CharField(max_length=100, blank=True, null=True)
@@ -69,7 +83,7 @@ class Set(models.Model):
     items = models.ManyToManyField(Item, related_name='sets_containing_item', blank=True)
 
     def __str__(self):
-        return self.name or 'Unnamed Set'
+        return self.set_name or 'Unnamed Set'
 
 class Bundle(models.Model):
     bundle_name = models.CharField(max_length=100, blank=True, null=True)
@@ -77,4 +91,4 @@ class Bundle(models.Model):
     sets = models.ManyToManyField(Set, related_name='bundles_containing_set', blank=True)
 
     def __str__(self):
-        return self.name or 'Unnamed Bundle'
+        return self.bundle_name or 'Unnamed Bundle'

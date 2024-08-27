@@ -1,25 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Edit Profile</h1>
+<div class="container mt-5">
+    <h1>Edit Profile</h1>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    
-    <h2>Profile Information</h2>
-    {{ profile_form.as_p }}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <h2>Characters</h2>
-    {% for form in character_forms %}
-        {{ form.as_p }}
-    {% endfor %}
+        <!-- Profile Section -->
+        <h2>Profile Information</h2>
+        <div class="mb-3">
+            {{ profile_form.as_p }}
+        </div>
 
-    <h2>Items</h2>
-    {% for form in item_forms %}
-        {{ form.as_p }}
-    {% endfor %}
-
-    <button type="submit">Save Changes</button>
-</form>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+</div>
 
 {% endblock %}

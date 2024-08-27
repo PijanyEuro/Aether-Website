@@ -12,11 +12,22 @@ from datetime import date
 
 
 
+from django.shortcuts import render
+from .models import Profile
+from django.contrib.auth.decorators import login_required
+
 def main(request):
-        
     today = date.today()
     SeasonalContentEntries = SeasonalContent.objects.filter(start_date__lte=today).filter(end_date__gte=today)
-    return render(request, 'index.html', {'SeasonalContentEntries': SeasonalContentEntries})
+    
+    profile = None
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)
+        
+    return render(request, 'index.html', {
+        'SeasonalContentEntries': SeasonalContentEntries,
+        'profile': profile
+    })
 
 
 from django.shortcuts import render, redirect
@@ -67,12 +78,8 @@ from .models import Profile
 @login_required
 def profile(request):
     profile = Profile.objects.get(user=request.user)# Get the user's profile
-    characters = profile.characters.all()# Get the related characters and items
-    items = profile.inventory.all()
     context = {
         'profile': profile,
-        'characters': characters,
-        'items': items,
     }# Pass the data to the template
     
     return render(request, 'profile.html', context)
@@ -80,36 +87,132 @@ def profile(request):
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Character, Item
-from .forms import ProfileForm, CharacterForm, ItemForm
+from .models import Profile
+from .forms import ProfileForm
 
 @login_required
 def profile_edit(request):
     profile = get_object_or_404(Profile, user=request.user)
-    
+
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
-        character_forms = [CharacterForm(request.POST, request.FILES, instance=character) for character in profile.characters.all()]
-        item_forms = [ItemForm(request.POST, request.FILES, instance=item) for item in profile.inventory.all()]
-
-        if all(form.is_valid() for form in [profile_form] + character_forms + item_forms):
+        if profile_form.is_valid():
             profile_form.save()
-            for form in character_forms:
-                form.save()
-            for form in item_forms:
-                form.save()
-            return redirect('profile')  # Redirect to profile view after saving
+            return redirect('profile')
     else:
         profile_form = ProfileForm(instance=profile)
-        character_forms = [CharacterForm(instance=character) for character in profile.characters.all()]
-        item_forms = [ItemForm(instance=item) for item in profile.inventory.all()]
-    
+
     context = {
         'profile_form': profile_form,
-        'character_forms': character_forms,
-        'item_forms': item_forms,
     }
 
-    
-    
     return render(request, 'profile_edit.html', context)
+
+
+
+
+@login_required
+def add_character(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    
+    if request.method == 'POST':
+        form = CharacterForm(request.POST, request.FILES)
+        if form.is_valid():
+            character = form.save(commit=False)
+            character.profile = profile  # Associate the character with the profile
+            character.save()
+            profile.characters.add(character)  # Ensure the character is added to the profile's characters
+            return redirect('characters')
+    else:
+        form = CharacterForm()
+
+    return render(request, 'add_character.html', {'form': form})
+
+
+
+
+
+@login_required
+def edit_character(request, character_id):
+    profile = get_object_or_404(Profile, user=request.user)
+    character = get_object_or_404(Character, id=character_id, profile=profile)
+
+    if request.method == 'POST':
+        form = CharacterForm(request.POST, request.FILES, instance=character)
+        if form.is_valid():
+            form.save()
+            return redirect('characters')
+    else:
+        form = CharacterForm(instance=character)
+
+    return render(request, 'edit_character.html', {'form': form, 'character': character})
+
+
+
+@login_required
+def characters(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    characters = profile.characters.all()
+    
+    context = {
+        'characters': characters,
+        'profile': profile,
+    }
+    
+    return render(request, 'characters.html', context)
+
+
+@login_required
+def add_item(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.save()  # Save item first
+            profile.inventory.add(item)  # Associate item with profile
+            return redirect('inventory')
+    else:
+        form = ItemForm()
+
+    return render(request, 'add_item.html', {'form': form})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Profile, Item
+from .forms import ItemForm
+
+@login_required
+def edit_item(request, item_id):
+    profile = get_object_or_404(Profile, user=request.user)
+    item = get_object_or_404(Item, id=item_id)
+
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Redirect to inventory or another appropriate page
+    else:
+        form = ItemForm(instance=item)
+
+    context = {
+        'form': form,
+        'item': item,
+    }
+
+    return render(request, 'edit_item.html', context)
+
+
+@login_required
+def inventory(request):
+    profile = Profile.objects.get(user=request.user)
+    items = profile.inventory.all()
+    
+    context = {
+        'items': items,
+        'profile': profile,
+    }
+    
+    return render(request, 'inventory.html', context)
