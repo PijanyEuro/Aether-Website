@@ -22,8 +22,25 @@
             background-color: #d1f2eb; /* Light background color for message box */
         }
     </style>
+
+
 </head>
 <body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', currentTheme);
+            darkModeSwitch.checked = currentTheme === 'dark';
+
+            darkModeSwitch.addEventListener('change', function() {
+                const theme = darkModeSwitch.checked ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem('theme', theme);
+            });
+        });
+    </script>
+    
     <!-- Main Container -->
     <div class="main-container">
         <center>
@@ -65,6 +82,12 @@
                             <ul class="dropdown-menu text-small">
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
+                                    <!-- Dark Mode Toggle -->
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="darkModeSwitch" />
+                                        <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+                                    </div>
+                                    <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout_user' %}">Log out</a></li>
                             </ul>
                         </div>
