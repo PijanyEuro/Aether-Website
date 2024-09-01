@@ -127,10 +127,39 @@ def edit_character(request, character_id):
     return render(request, 'edit_character.html', {'form': form, 'character': character})
 
 @login_required
-def characters(request):
+def my_characters(request):
     profile = get_object_or_404(Profile, user=request.user)
     characters = profile.characters.all()
-    return render(request, 'characters.html', {'characters': characters, 'profile': profile})
+    return render(request, 'my_characters.html', {'characters': characters, 'profile': profile})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Profile, Character
+
+def all_characters(request):
+    # Handle the profile for authenticated users
+    profile = None
+    if request.user.is_authenticated:
+        profile = get_object_or_404(Profile, user=request.user)
+    
+    characters = Character.objects.all()  # Query all characters from the Character model
+    
+    return render(request, 'all_characters.html', {'characters': characters, 'profile': profile})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Profile, Character
+
+def display_character(request, character_id):
+    character = get_object_or_404(Character, id=character_id)
+    
+    # Get the profile of the logged-in user if authenticated
+    profile = None
+    if request.user.is_authenticated:
+        profile = get_object_or_404(Profile, user=request.user)
+
+    return render(request, 'widgets/display_character.html', {'character': character, 'profile': profile})
+
 
 @login_required
 def add_item(request):
