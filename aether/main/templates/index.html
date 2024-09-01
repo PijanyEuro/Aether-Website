@@ -7,44 +7,103 @@
 
     <!-- Grid container -->
     <div class="seasonal-content-grid">
-        {% for SeasonalContent in SeasonalContentEntries %}
+        {% for seasonal_content in seasonal_content_entries %}
+
         <!-- Grid item -->
         <div class="seasonal-content-box">
-            <h2 class="seasonal-content-title">{{ SeasonalContent.title }}</h2>
-            <div>{{ SeasonalContent.content|safe }}</div>
+            <h2 class="seasonal-content-title">{{ seasonal_content.title }}</h2>
+            <div>{{ seasonal_content.content|safe }}</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
+{% if events %}
+<div class="event-section">
+    <h2>Upcoming Events</h2>
+    <div class="event-grid">
+        {% for event in events %}
+        <div class="event-box">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+            <p>{{ event.date }}</p>
+            {% if user.is_authenticated %}
+                {% if user in event.participants.all %}
+                    <p>You have joined this event!</p>
+                {% else %}
+                    <a href="{% url 'join_event' event.id %}" class="btn btn-primary">Join Event</a>
+                {% endif %}
+            {% else %}
+                <p><a href="{% url 'login_user' %}">Log in</a> to join this event.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <style>
-    /* Grid container styles */
+    /* Grid container styles for seasonal content */
     .seasonal-content-grid {
         max-width: 100rem;
         padding: 2rem;
         display: grid;
-        grid-template-columns: 1fr; /* Single column by default */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust columns automatically */
         gap: 20px; /* Space between items */
-        justify-content: center; /* Center the items horizontally */
+        justify-content: center; /* Center the grid container */
         align-content: start; /* Align content to the top */
     }
 
-    /* Responsive layout */
+    /* Responsive layout for seasonal content */
     @media (min-width: 600px) {
         .seasonal-content-grid {
-            grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive column layout */
         }
     }
 
     @media (min-width: 900px) {
         .seasonal-content-grid {
-            grid-template-columns: repeat(2, 1fr); /* Limit to 2 columns on larger screens */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column layout */
             justify-content: start; /* Align to start when there are enough items */
         }
     }
 
     /* Grid item (seasonal content box) styles */
     .seasonal-content-box {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        min-height: 150px;
+    }
+
+    /* Grid container styles for events */
+    .event-grid {
+        max-width: 100rem;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust columns automatically */
+        gap: 20px; /* Space between items */
+        justify-content: center; /* Center the grid container */
+        align-content: start; /* Align content to the top */
+    }
+
+    /* Responsive layout for events */
+    @media (min-width: 600px) {
+        .event-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive column layout */
+        }
+    }
+
+    @media (min-width: 900px) {
+        .event-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column layout */
+            justify-content: start; /* Align to start when there are enough items */
+        }
+    }
+
+    /* Grid item (event box) styles */
+    .event-box {
         border: 1px solid #ddd;
         padding: 20px;
         border-radius: 8px;

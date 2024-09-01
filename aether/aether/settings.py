@@ -55,7 +55,7 @@ ROOT_URLCONF = 'aether.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # Add a global templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

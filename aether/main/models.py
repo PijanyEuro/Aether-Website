@@ -8,6 +8,16 @@ class Member(models.Model):
 
 
 
+class Event(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    date = models.DateField()
+    participants = models.ManyToManyField(User, related_name='events_participated', blank=True)
+
+    def __str__(self):
+        return self.title
+
+
 
 # This is the model for the stuff that can appear on the homepage on specific days
 class SeasonalContent(models.Model):

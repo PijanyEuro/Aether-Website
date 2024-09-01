@@ -9,20 +9,43 @@ from datetime import date
 from .models import SeasonalContent, Profile, Character, Item, Bundle, ShopItem, ProfileItem
 from .forms import CharacterForm, ProfileForm, AddItemForm, CreateItemForm, ItemForm
 
-# Create your views here.
+
+from .models import Event
 
 def main(request):
     today = date.today()
     seasonal_content_entries = SeasonalContent.objects.filter(start_date__lte=today, end_date__gte=today)
-    
+    events = Event.objects.filter(date__gte=today)
+
     profile = None
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
-        
+
     return render(request, 'index.html', {
         'seasonal_content_entries': seasonal_content_entries,
+        'events': events,
         'profile': profile
     })
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Event
+
+@login_required
+def join_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    user = request.user
+    if user not in event.participants.all():
+        event.participants.add(user)
+        event.save()
+        messages.success(request, f"You have joined the event: {event.title}")
+    else:
+        messages.info(request, "You are already registered for this event.")
+    
+    return redirect('main')
+
+
 
 def members(request):
     return HttpResponse("Hello world!")
@@ -195,3 +218,12 @@ def shop(request):
         return redirect('shop')
     
     return render(request, 'shop.html', {'shop_items': shop_items, 'profile': profile})
+
+
+@login_required
+def events_page(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    # Get all events that the user is participating in
+    events = Event.objects.filter(participants=profile.user)
+    
+    return render(request, 'events.html', {'events': events, 'profile': profile})

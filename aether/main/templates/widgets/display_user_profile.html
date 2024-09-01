@@ -1,0 +1,22 @@
+{% load static %}
+
+<div class="d-flex align-items-center">
+    <!-- Display the User's Profile Picture -->
+    {% if show_user.profile.profile_pic %}
+        <img src="{{ show_user.profile.profile_pic.url }}" width="32" height="32" class="rounded-circle me-2">
+    {% else %}
+        <img src="{% static 'svg/person.svg' %}" width="32" height="32" class="rounded-circle me-2">
+    {% endif %}
+
+    <!-- Display the User's Name -->
+    <a class="text-decoration-none">
+        {{ show_user.profile.profile_name }}
+    </a>
+
+    <!-- If they are staff, show a funny little icon -->
+    {% if show_user.profile.user.is_staff %}
+        {% include 'widgets/staff_icon.html' %}
+    {% endif %}
+</div>
+
+<p class="mt-1">{{ show_user.bio }}</p>
