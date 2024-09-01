@@ -18,9 +18,7 @@
         .header-box { /* Add styling for header if needed */ }
         .main-container { /* Add styling for main container if needed */ }
         .footer { /* Add styling for footer if needed */ }
-        .message-box { 
-            background-color: #d1f2eb; /* Light background color for message box */
-        }
+
     </style>
 
 
@@ -60,7 +58,7 @@
                             <li><a href="{% url 'main' %}" class="nav-link px-2 link-body-emphasis">Home</a></li>
                             <li><a href="{% url 'inventory' %}" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
                             <li><a href="{% url 'characters' %}" class="nav-link px-2 link-body-emphasis">Characters</a></li>
-                            <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+                            <li><a href="{% url 'shop' %}" class="nav-link px-2 link-body-emphasis">Shop</a></li>
                         </ul>
 
                         <!-- Search form -->

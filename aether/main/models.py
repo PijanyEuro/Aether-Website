@@ -40,7 +40,6 @@ class Profile(models.Model):
     profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
     profile_name = models.CharField(max_length=100, blank=True)
     essence_count = models.IntegerField(default=0)
-    inventory = models.ManyToManyField('Item', related_name='profiles_with_item', blank=True)
     characters = models.ManyToManyField('Character', related_name='profiles_with_character', blank=True)
 
     def __str__(self):
@@ -53,9 +52,16 @@ class Profile(models.Model):
         super().save(*args, **kwargs)
 
 
+class ProfileItem(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_items')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='profile_items')
+    quantity = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        unique_together = ('profile', 'item')
 
-
+    def __str__(self):
+        return f"{self.item.item_name} ({self.quantity})"
 
 class Character(models.Model):
     character_name = models.CharField(max_length=100, blank=True, null=True)
@@ -92,3 +98,12 @@ class Bundle(models.Model):
 
     def __str__(self):
         return self.bundle_name or 'Unnamed Bundle'
+
+
+class ShopItem(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+    price = models.IntegerField()  # Price in essence
+
+    def __str__(self):
+        return f"{self.item.item_name} - {self.price} essence"

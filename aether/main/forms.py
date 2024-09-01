@@ -63,3 +63,30 @@ class ItemForm(forms.ModelForm):
             'item_name': 'Item Name',
             'description': 'Item Description',
         }
+
+# forms.py
+
+from django import forms
+from .models import Item
+
+class AddItemForm(forms.Form):
+    item = forms.ModelChoiceField(
+        queryset=Item.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    quantity = forms.IntegerField(
+        min_value=1,
+        required=True,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
+
+class CreateItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['item_name', 'description', 'image']
+        widgets = {
+            'item_name': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }

@@ -22,10 +22,14 @@
         <tbody>
             {% for shop_item in shop_items %}
             <tr>
+                {% if shop_item.item.image %}
                 <td><img src="{{ shop_item.item.image.url }}" alt="{{ shop_item.item.item_name }}" class="img-thumbnail" style="max-width: 100px;"></td>
+                {% else %}
+                <td>No Image</td>
+                {% endif %}
                 <td>{{ shop_item.item.item_name }}</td>
                 <td>{{ shop_item.item.description }}</td>
-                <td>{{ shop_item.item.price }} essence</td>
+                <td>{{ shop_item.price }} essence</td>
                 <td>{{ shop_item.quantity }}</td>
                 <td>
                     {% if shop_item.quantity > 0 %}

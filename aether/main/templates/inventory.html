@@ -14,21 +14,25 @@
                             <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Quantity</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in items %}
+                        {% for profile_item in items %}
                             <tr>
                                 <td>
-                                    {% if item.image %}
-                                        <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="img-thumbnail" style="max-width: 100px;">
+                                    {% if profile_item.item.image %}
+                                        <img src="{{ profile_item.item.image.url }}" alt="{{ profile_item.item.item_name }}" class="img-thumbnail" style="max-width: 100px;">
+                                    {% else %}
+                                        <a>No Image</a>
                                     {% endif %}
                                 </td>
-                                <td>{{ item.item_name }}</td>
-                                <td>{{ item.description }}</td>
+                                <td>{{ profile_item.item.item_name }}</td>
+                                <td>{{ profile_item.item.description }}</td>
+                                <td>{{ profile_item.quantity }}</td>
                                 <td>
-                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-warning">Edit</a>
+                                    <a href="{% url 'edit_item' profile_item.item.id %}" class="btn btn-warning">Edit</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -41,8 +45,9 @@
     </div>
 
     <div class="border border-dark p-3" style="max-width: 200px;">
-        <h2>Add an item</h2>
-        <a href="{% url 'add_item' %}" class="btn btn-warning">Add Item</a>
+        <a href="{% url 'add_item' %}" class="btn btn-warning">Add an Existing Item</a>
+        <a>-</a>
+        <a href="{% url 'create_item' %}" class="btn btn-warning">Create a New Item</a>
     </div>
 </div>
 

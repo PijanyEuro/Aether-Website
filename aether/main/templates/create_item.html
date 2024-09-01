@@ -1,13 +1,13 @@
-<!-- add_item.html -->
 {% extends "base.html" %}
 {% block content %}
 
 <div class="container mt-5">
-    <h1>Add Item to Inventory</h1>
-    <form method="post">
+    <h1>Create New Item</h1>
+
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Add Item</button>
+        <button type="submit" class="btn btn-primary">Create Item</button>
     </form>
 </div>
 
