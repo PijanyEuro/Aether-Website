@@ -5,30 +5,12 @@
     <h2 class="mb-4">Your Events</h2>
 
     {% if events %}
-        <div class="list-group">
-            {% for event in events %}
-                <div class="list-group-item list-group-item-action mb-3">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ event.title }}</h5>
-                        <small class="text-muted">{{ event.date }}</small>
-                    </div>
-                    <p class="mb-1">{{ event.description }}</p>
-
-                    <div class="mt-3">
-                        <h6 class="mb-2">Participants:</h6>
-                        <ul class="list-group">
-                            {% for participant in event.participants.all %}
-                                <li class="list-group-item d-flex align-items-center">
-                                    {% include 'widgets/display_user_profile.html' with show_user=participant %}
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item">No participants yet.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+    <div class="list-group">
+        {% for event in events %}
+            {% include 'widgets/display_event.html' %}
+        {% endfor %}
+    </div>
+    
     {% else %}
         <div class="alert alert-info" role="alert">
             You are not currently registered for any events.

@@ -3,62 +3,49 @@
 
 <!-- Features Section -->
 <div class="feature-section">
-    <!-- Grid container -->
-    <div class="seasonal-content-grid">
+    <!-- Seasonal Content Grid -->
+    <div class="seasonal-content-grid body-bg-text-shadow">
         {% for seasonal_content in seasonal_content_entries %}
-        <!-- Grid item -->
-        <div class="seasonal-content-box">
-            <h2 class="seasonal-content-title">{{ seasonal_content.title }}</h2>
+        <!-- Individual Seasonal Content Item -->
+        <div class="seasonal-content-box body-bg-text-shadow" 
+        {% if seasonal_content.sc_photo %}
+            style="background-image: url('{{ seasonal_content.sc_photo.url }}');"
+        {% endif %}
+        >
+            <h2 class="seasonal-content-title body-bg-text-shadow">{{ seasonal_content.title }}</h2>
             <div>{{ seasonal_content.content|safe }}</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
+<!-- Check if there are events to display -->
 {% if events %}
 <div class="event-section">
     <h2>Upcoming Events</h2>
     <div class="event-grid">
         {% for event in events %}
-
-        <!--Only set the background image if the event has one, otherwise, the default theme style is retained-->
-        <div class="event-box"
-        {% if event.event_photo %}
-            style="background-image: url('{{ event.event_photo.url }}');"
-        {% endif %}
-        >
-
-            <h3 class="event-box-text-shadow">{{ event.title }}</h3>
-            <p class="event-box-text-shadow">{{ event.description }}</p>
-            <p class="event-date event-box-text-shadow">{{ event.date }}</p>
-            {% if user.is_authenticated %}
-                {% if user in event.participants.all %}
-                    <p class="joined-message event-box-text-shadow">You have joined this event!</p>
-                {% else %}
-                    <a href="{% url 'join_event' event.id %}" class="btn btn-primary">Join Event</a>
-                {% endif %}
-            {% else %}
-                <p><a href="{% url 'login_user' %}" class="event-box-text-shadow">Log in</a> to join this event.</p>
-            {% endif %}
-        </div>
+            <!-- Including the display_event.html to maintain consistent event layout -->
+            {% include 'widgets/display_event.html' %}
         {% endfor %}
     </div>
 </div>
 {% endif %}
 
+<!-- Custom Styling for Seasonal Content and Events -->
 <style>
     /* Grid container styles for seasonal content */
     .seasonal-content-grid {
         max-width: 1200px;
         padding: 2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Automatically adjusts columns */
-        gap: 20px; /* Space between items */
-        justify-content: center; /* Center the grid container */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+        gap: 20px; /* Space between grid items */
+        justify-content: center; /* Center the grid */
         align-content: start; /* Align content to the top */
     }
 
-    /* Grid item (seasonal content box) styles */
+    /* Seasonal content box styles with background image */
     .seasonal-content-box {
         border: 1px solid var(--bs-border-color);
         background-color: var(--bs-body-bg);
@@ -67,75 +54,30 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         min-height: 180px;
         transition: box-shadow 0.3s ease, transform 0.3s ease;
+        
+        /* Set background image and styling */
+        background-size: cover; /* Ensures the image covers the entire box */
+        background-position: center; /* Centers the image in the box */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        color: white; /* Ensures text is readable over the image */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); /* Adds text shadow for better readability */
     }
 
+    /* Hover effect for seasonal content */
     .seasonal-content-box:hover {
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         transform: translateY(-5px);
     }
 
-    /* Grid container styles for events */
+    /* Grid container for events */
     .event-grid {
         max-width: 1200px;
         padding: 2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Automatically adjusts columns */
-        gap: 20px; /* Space between items */
-        justify-content: center; /* Center the grid container */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+        gap: 20px; /* Space between event items */
+        justify-content: center; /* Center the grid */
         align-content: start; /* Align content to the top */
-    }
-
-    .event-box {
-        border: 1px solid var(--bs-border-color);
-        background-color: var(--bs-body-bg);
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        min-height: 180px;
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-    
-        /* Add these properties to make the background image fit better */
-        background-size: cover; /* Ensures the image covers the entire box */
-        background-position: center; /* Centers the image in the box */
-        background-repeat: no-repeat; /* Prevents the image from repeating */
-    }
-    
-    .event-box:hover {
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-        transform: translateY(-5px);
-    }
-
-    .event-box-text-shadow{
-        text-shadow: .1em .1em var(--bs-body-bg) !important;
-    }
-
-
-    .event-date {
-        font-weight: bold;
-        color: var(--bs-body-primary);
-    }
-
-    .joined-message {
-        color: #4caf50; /* Green color for joined message */
-    }
-
-    /* Button styling */
-    .btn-primary {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        font-weight: bold;
-        color: #fff;
-        background-color: var(--bs-primary);
-        border: none;
-        border-radius: 8px;
-        text-align: center;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: var(--bs-primary-dark);
     }
 </style>
 

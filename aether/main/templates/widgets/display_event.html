@@ -1,0 +1,94 @@
+<div class="event-box"
+{% if event.event_photo %}
+    style="background-image: url('{{ event.event_photo.url }}');"
+{% endif %}
+>
+    <h3 class="body-bg-text-shadow">{{ event.title }}</h3>
+    <p class="body-bg-text-shadow">{{ event.description }}</p>
+    <p class="event-date body-bg-text-shadow">{{ event.date }}</p>
+
+    <!-- Participants section -->
+    <div class="mt-3">
+        <h6 class="body-bg-text-shadow">Participants:</h6>
+        <ul class="list-group">
+            {% for participant in event.participants.all %}
+                <li class="list-group-item d-flex align-items-center participant-object">
+                    {% include 'widgets/display_user_profile.html' with show_user=participant %}
+                </li>
+            {% empty %}
+                <li class="list-group-item">No participants yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Join Event button or message -->
+    {% if user.is_authenticated %}
+        {% if user in event.participants.all %}
+            <p class="joined-message body-bg-text-shadow">You have joined this event!</p>
+        {% else %}
+            <a href="{% url 'join_event' event.id %}" class="btn btn-primary">Join Event</a>
+        {% endif %}
+    {% else %}
+        <p class="body-bg-text-shadow"><a href="{% url 'login_user' %}">Log in</a> to join this event.</p>
+    {% endif %}
+</div>
+
+<style>
+    .event-box {
+        border: 1px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        min-height: 180px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .event-box:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+
+
+    .event-date {
+        font-weight: bold;
+        color: var(--bs-body-primary);
+    }
+
+    .joined-message {
+        color: #4caf50; /* Green color for joined message */
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: var(--bs-primary);
+        border: none;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--bs-primary-dark);
+    }
+
+    .list-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers items horizontally */
+    }
+    
+
+    .participant-object{
+        max-width: 30rem;
+    }
+</style>
