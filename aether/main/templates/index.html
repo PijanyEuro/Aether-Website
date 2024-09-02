@@ -2,13 +2,10 @@
 {% block content %}
 
 <!-- Features Section -->
-<div class="feature-section" style="border-left: none; border-right: none;">
-    <!--<p><span class="joesworldonline-text">Some Really Cool text goes here</span></p>-->
-
+<div class="feature-section">
     <!-- Grid container -->
     <div class="seasonal-content-grid">
         {% for seasonal_content in seasonal_content_entries %}
-
         <!-- Grid item -->
         <div class="seasonal-content-box">
             <h2 class="seasonal-content-title">{{ seasonal_content.title }}</h2>
@@ -23,18 +20,25 @@
     <h2>Upcoming Events</h2>
     <div class="event-grid">
         {% for event in events %}
-        <div class="event-box">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.description }}</p>
-            <p>{{ event.date }}</p>
+
+        <!--Only set the background image if the event has one, otherwise, the default theme style is retained-->
+        <div class="event-box"
+        {% if event.event_photo %}
+            style="background-image: url('{{ event.event_photo.url }}');"
+        {% endif %}
+        >
+
+            <h3 class="event-box-text-shadow">{{ event.title }}</h3>
+            <p class="event-box-text-shadow">{{ event.description }}</p>
+            <p class="event-date event-box-text-shadow">{{ event.date }}</p>
             {% if user.is_authenticated %}
                 {% if user in event.participants.all %}
-                    <p>You have joined this event!</p>
+                    <p class="joined-message event-box-text-shadow">You have joined this event!</p>
                 {% else %}
                     <a href="{% url 'join_event' event.id %}" class="btn btn-primary">Join Event</a>
                 {% endif %}
             {% else %}
-                <p><a href="{% url 'login_user' %}">Log in</a> to join this event.</p>
+                <p><a href="{% url 'login_user' %}" class="event-box-text-shadow">Log in</a> to join this event.</p>
             {% endif %}
         </div>
         {% endfor %}
@@ -45,70 +49,93 @@
 <style>
     /* Grid container styles for seasonal content */
     .seasonal-content-grid {
-        max-width: 100rem;
+        max-width: 1200px;
         padding: 2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust columns automatically */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Automatically adjusts columns */
         gap: 20px; /* Space between items */
         justify-content: center; /* Center the grid container */
         align-content: start; /* Align content to the top */
-    }
-
-    /* Responsive layout for seasonal content */
-    @media (min-width: 600px) {
-        .seasonal-content-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive column layout */
-        }
-    }
-
-    @media (min-width: 900px) {
-        .seasonal-content-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column layout */
-            justify-content: start; /* Align to start when there are enough items */
-        }
     }
 
     /* Grid item (seasonal content box) styles */
     .seasonal-content-box {
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        min-height: 150px;
+        border: 1px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        min-height: 180px;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .seasonal-content-box:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
     }
 
     /* Grid container styles for events */
     .event-grid {
-        max-width: 100rem;
+        max-width: 1200px;
         padding: 2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust columns automatically */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Automatically adjusts columns */
         gap: 20px; /* Space between items */
         justify-content: center; /* Center the grid container */
         align-content: start; /* Align content to the top */
     }
 
-    /* Responsive layout for events */
-    @media (min-width: 600px) {
-        .event-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive column layout */
-        }
-    }
-
-    @media (min-width: 900px) {
-        .event-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column layout */
-            justify-content: start; /* Align to start when there are enough items */
-        }
-    }
-
-    /* Grid item (event box) styles */
     .event-box {
-        border: 1px solid #ddd;
-        padding: 20px;
+        border: 1px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        min-height: 180px;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    
+        /* Add these properties to make the background image fit better */
+        background-size: cover; /* Ensures the image covers the entire box */
+        background-position: center; /* Centers the image in the box */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+    }
+    
+    .event-box:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+    .event-box-text-shadow{
+        text-shadow: .1em .1em var(--bs-body-bg) !important;
+    }
+
+
+    .event-date {
+        font-weight: bold;
+        color: var(--bs-body-primary);
+    }
+
+    .joined-message {
+        color: #4caf50; /* Green color for joined message */
+    }
+
+    /* Button styling */
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: var(--bs-primary);
+        border: none;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        min-height: 150px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--bs-primary-dark);
     }
 </style>
 

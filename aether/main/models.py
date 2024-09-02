@@ -13,6 +13,7 @@ class Event(models.Model):
     description = models.TextField()
     date = models.DateField()
     participants = models.ManyToManyField(User, related_name='events_participated', blank=True)
+    event_photo = models.ImageField(upload_to='event_photos/', blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -25,6 +26,7 @@ class SeasonalContent(models.Model):
     content = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+    sc_photo = models.ImageField(upload_to='sc_photos/', blank=True, null=True)
 
     def __str__(self):
         return self.title

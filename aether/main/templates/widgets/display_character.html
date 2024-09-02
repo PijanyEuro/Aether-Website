@@ -4,11 +4,18 @@
     {% if character %}
         <div class="row">
             <!-- Character Photo -->
-            <div class="col-md-4 text-center">
+            <div class="col-md-4 d-flex flex-column align-items-center">
                 {% if character.top_down_photo %}
                     <img src="{{ character.top_down_photo.url }}" alt="{{ character.character_name }}" class="img-fluid img-thumbnail" style="max-width: 200px;">
                 {% else %}
                     <img src="{% static 'default-character-photo.png' %}" alt="No Character Photo Available." class="img-fluid img-thumbnail" style="max-width: 200px;">
+                {% endif %}
+
+                <!-- Conditionally display the Edit button -->
+                {% if profile and character.profile == profile %}
+                    <div class="mt-auto">
+                        <a href="{% url 'edit_character' character.id %}" class="btn btn-warning">Edit Character</a>
+                    </div>
                 {% endif %}
             </div>
             <!-- Character Details -->
@@ -43,13 +50,6 @@
                         <strong>Bio:</strong> {{ character.bio }}
                     </div>
                 </div>
-                
-                <!-- Conditionally display the Edit button -->
-                {% if profile and character.profile == profile %}
-                    <div class="mt-3">
-                        <a href="{% url 'edit_character' character.id %}" class="btn btn-warning">Edit Character</a>
-                    </div>
-                {% endif %}
             </div>
         </div>
     {% else %}
