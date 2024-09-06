@@ -38,6 +38,7 @@ class Item(models.Model):
     item_name = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='items/', blank=True, null=True)
+    is_lootbox = models.BooleanField(default=False)
     character = models.ForeignKey('Character', on_delete=models.CASCADE, related_name='items', blank=True, null=True)
     set = models.ForeignKey('Set', on_delete=models.CASCADE, related_name='items_in_set', blank=True, null=True)
 

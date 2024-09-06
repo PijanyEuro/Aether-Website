@@ -19,4 +19,5 @@ urlpatterns = [
     path('members/inventory/add_item/', views.add_item, name='add_item'),
     path('members/inventory/create_item/', views.create_item, name='create_item'),  # This line should be for creating new
     path('members/inventory/edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
+    path('open_lootbox/<int:item_id>/', views.open_lootbox, name='open_lootbox'),
 ]

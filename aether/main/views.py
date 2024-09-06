@@ -256,3 +256,55 @@ def events_page(request):
     events = Event.objects.filter(participants=profile.user)
     
     return render(request, 'events.html', {'events': events, 'profile': profile})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Item, ProfileItem
+import random
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import Item, Profile, ProfileItem
+import random
+
+@login_required
+def open_lootbox(request, item_id):
+    lootbox = get_object_or_404(Item, id=item_id, is_lootbox=True)
+    profile = get_object_or_404(Profile, user=request.user)
+
+    # Get all items from the lootbox's set, excluding the lootbox itself
+    set_items = lootbox.set.items_in_set.exclude(id=lootbox.id)
+    
+    if set_items.exists():
+        # Pick a random item from the set
+        random_item = random.choice(set_items)
+
+        # Add the random item to the user's inventory (ProfileItem)
+        profile_item, created = ProfileItem.objects.get_or_create(profile=profile, item=random_item)
+        if not created:
+            profile_item.quantity += 1
+        else:
+            profile_item.quantity = 1
+        profile_item.save()
+
+        # After dispensing the item, remove the lootbox (optional)
+        try:
+            profile_lootbox = ProfileItem.objects.get(profile=profile, item=lootbox)
+            profile_lootbox.quantity -= 1
+            if profile_lootbox.quantity <= 0:
+                profile_lootbox.delete()
+            else:
+                profile_lootbox.save()
+        except ProfileItem.DoesNotExist:
+            # Handle the case where the lootbox is not found in the user's profile
+            messages.error(request, "Lootbox item not found in your inventory.")
+            return redirect('inventory')
+
+        # Render the lootbox opening animation page with the item dispensed
+        return render(request, 'open_lootbox.html', {
+            'dispensed_item': random_item
+        })
+    else:
+        # Handle case where the set has no items
+        messages.error(request, "This lootbox contains no items.")
+        return redirect('inventory')

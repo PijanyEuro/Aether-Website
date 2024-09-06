@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* Simple animation styles */
+    .animation {
+        width: 100px;
+        height: 100px;
+        background-color: gold;
+        animation: spin 2s linear;
+        margin: 0 auto; /* Center the animation */
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .lootbox-box {
+        margin: 1rem;
+        padding: 1rem;
+        border: 1px solid #ddd; /* Add border for better visual separation */
+        border-radius: 0.25rem; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for a subtle 3D effect */
+        text-align: center; /* Center content within the box */
+    }
+    
+    .lootbox-box img {
+        max-width: 100%; /* Make sure the image does not overflow */
+        height: auto; /* Maintain aspect ratio */
+    }
+</style>
+
+<script>
+    // Display the item after a brief delay (2 seconds for the animation)
+    setTimeout(function() {
+        document.querySelector('.animation').outerHTML = `
+            <h2>You received: {{ dispensed_item.item_name }}</h2>
+            <img style="max-width: 10rem;" class="img-thumbnail" src="{{ dispensed_item.image.url }}" alt="{{ dispensed_item.item_name }}">
+        `;
+    }, 2000);
+</script>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 lootbox-box">
+            <h1 class="mb-4">Opening Lootbox...</h1>
+            <div class="animation"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

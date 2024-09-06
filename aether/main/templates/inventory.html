@@ -31,9 +31,19 @@
                                 <td>{{ profile_item.item.item_name }}</td>
                                 <td>{{ profile_item.item.description }}</td>
                                 <td>{{ profile_item.quantity }}</td>
-                                <td>
-                                    <a href="{% url 'edit_item' profile_item.item.id %}" class="btn btn-warning">Edit</a>
-                                </td>
+    
+                                    {% if profile_item.item.is_lootbox %}
+                                    <td>
+                                        <form action="{% url 'open_lootbox' profile_item.item.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success">Open Lootbox</button>
+                                        </form>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a href="{% url 'edit_item' profile_item.item.id %}" class="btn btn-warning">Edit</a>
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
