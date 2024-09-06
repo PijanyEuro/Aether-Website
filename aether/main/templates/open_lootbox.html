@@ -1,21 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% load static %}
 <style>
-    /* Simple animation styles */
-    .animation {
+    /* Centering and positioning for the GIF */
+    .gif-overlay {
+        position: absolute;
         width: 100px;
         height: 100px;
-        background-color: gold;
-        animation: spin 2s linear;
-        margin: 0 auto; /* Center the animation */
-    }
-
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10; /* Make sure the GIF appears on top */
     }
     
+    /* Styling for the lootbox container */
     .lootbox-box {
         margin: 1rem;
         padding: 1rem;
@@ -23,6 +21,7 @@
         border-radius: 0.25rem; /* Rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for a subtle 3D effect */
         text-align: center; /* Center content within the box */
+        position: relative; /* Needed for the GIF overlay */
     }
     
     .lootbox-box img {
@@ -32,22 +31,42 @@
 </style>
 
 <script>
-    // Display the item after a brief delay (2 seconds for the animation)
-    setTimeout(function() {
-        document.querySelector('.animation').outerHTML = `
-            <h2>You received: {{ dispensed_item.item_name }}</h2>
-            <img style="max-width: 10rem;" class="img-thumbnail" src="{{ dispensed_item.image.url }}" alt="{{ dispensed_item.item_name }}">
-        `;
-    }, 2000);
+    window.addEventListener('load', function() {
+        var gif = document.querySelector('.gif-overlay');
+        
+        // Reset the GIF src to ensure it starts from the beginning
+        var gifSrc = gif.src;
+        gif.src = '';
+        gif.src = gifSrc;
+
+        // Replace the GIF with the dispensed item details after 1.5 seconds
+        setTimeout(function() {
+            gif.outerHTML = `
+                <h4>You received:</h4>
+                <h1> {{ dispensed_item.item_name }} </h1>
+                <p> {{ dispensed_item.description }} </p>
+                <img style="max-width: 10rem;" class="img-thumbnail" src="{{ dispensed_item.image.url }}" alt="{{ dispensed_item.item_name }}">
+            `;
+            
+            // Hide the opening text
+            document.getElementById('opening-text').style.display = 'none';
+            
+            // Unhide the "Back to inventory" link
+            document.getElementById('back-to-inventory').style.display = 'block';
+        }, 2000); // 2 seconds to allow GIF to play once
+    });
 </script>
+
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 lootbox-box">
-            <h1 class="mb-4">Opening Lootbox...</h1>
-            <div class="animation"></div>
+        <div class="col-md-8 lootbox-box" style="height: 20rem;">
+            <h1 class="mb-4" id="opening-text">Opening Lootbox...</h1>
+            <!-- GIF will automatically play on load -->
+            <img style="width: 30rem; padding: 2rem;" src="{% static 'gif/box_open.gif' %}" id="Animation" alt="Opening Animation" class="gif-overlay">
         </div>
     </div>
+    <a href="{% url 'inventory' %}" id="back-to-inventory" class="nav-link px-2 text-body-secondary" style="display: none;">Back to inventory</a>
 </div>
 
 {% endblock %}
