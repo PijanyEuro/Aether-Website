@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+
 
 <!-- Features Section -->
 <div class="feature-section">
@@ -13,7 +15,7 @@
         {% endif %}
         >
             <h2 class="seasonal-content-title body-bg-text-shadow">{{ seasonal_content.title }}</h2>
-            <div>{{ seasonal_content.content|safe }}</div>
+            <div style="border: none;">{{ seasonal_content.content|safe }}</div>
         </div>
         {% endfor %}
     </div>
