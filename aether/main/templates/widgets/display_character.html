@@ -20,10 +20,10 @@
             </div>
             <!-- Character Details -->
             <div class="col-md-8">
-                <h2 class="mb-3">{{ character.character_name }}</h2>
+                <h2 class="mb-3">{{ character.character_name|safe  }}</h2>
                 <div class="list-group">
                     <div class="list-group-item">
-                        <strong>Class:</strong> {{ character.character_class }}
+                        <strong>Class:</strong> {{ character.character_class|safe  }}
                     </div>
                     <div class="list-group-item">
                         <strong>Level:</strong> {{ character.level }}
@@ -47,7 +47,7 @@
                         <strong>Charisma:</strong> {{ character.charisma }}
                     </div>
                     <div class="list-group-item">
-                        <strong>Bio:</strong> {{ character.bio }}
+                        <strong>Bio:</strong> {{ character.bio |safe  }}
                     </div>
                 </div>
             </div>

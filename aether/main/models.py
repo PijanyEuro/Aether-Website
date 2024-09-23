@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Member(models.Model):
   firstname = models.CharField(max_length=255)
@@ -76,9 +77,12 @@ class ProfileItem(models.Model):
     def __str__(self):
         return f"{self.item.item_name} ({self.quantity})"
 
+
+
 class Character(models.Model):
     character_name = models.CharField(max_length=100, blank=True, null=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='character_profiles', blank=True, null=True)
+    
     # Stats
     strength = models.IntegerField()
     dexterity = models.IntegerField()
@@ -93,8 +97,17 @@ class Character(models.Model):
     top_down_photo = models.ImageField(upload_to='characters/', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        # Ensure created_at is set to now if it's not provided
+        if not self.created_at:
+            self.created_at = timezone.now()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.character_name or 'Unnamed Character'
+
 
 class Set(models.Model):
     set_name = models.CharField(max_length=100, blank=True, null=True)

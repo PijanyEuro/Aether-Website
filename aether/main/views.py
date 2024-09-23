@@ -106,7 +106,7 @@ def add_character(request):
             character.profile = profile
             character.save()
             profile.characters.add(character)
-            return redirect('characters')
+            return redirect('my_characters')
     else:
         form = CharacterForm()
     
@@ -120,7 +120,7 @@ def edit_character(request, character_id):
         form = CharacterForm(request.POST, request.FILES, instance=character)
         if form.is_valid():
             form.save()
-            return redirect('characters')
+            return redirect('my_characters')
     else:
         form = CharacterForm(instance=character)
     
@@ -136,15 +136,44 @@ def my_characters(request):
 from django.shortcuts import render, get_object_or_404
 from .models import Profile, Character
 
+from django.core.paginator import Paginator
+
+from django.core.paginator import Paginator
+
 def all_characters(request):
-    # Handle the profile for authenticated users
     profile = None
     if request.user.is_authenticated:
         profile = get_object_or_404(Profile, user=request.user)
-    
-    characters = Character.objects.all()  # Query all characters from the Character model
-    
-    return render(request, 'all_characters.html', {'characters': characters, 'profile': profile})
+
+    # Get sorting criteria from the request, defaulting to 'name'
+    sort_by = request.GET.get('sort', 'name')
+
+    # Sorting logic
+    if sort_by == 'name_desc':
+        characters_list = Character.objects.all().order_by('-character_name')
+    elif sort_by == 'date':
+        characters_list = Character.objects.all().order_by('created_at')
+    elif sort_by == 'date_desc':
+        characters_list = Character.objects.all().order_by('-created_at')
+    elif sort_by == 'profile':
+        characters_list = Character.objects.all().order_by('profile__user__username')
+    elif sort_by == 'profile_desc':
+        characters_list = Character.objects.all().order_by('-profile__user__username')
+    else:
+        characters_list = Character.objects.all().order_by('character_name')
+
+    paginator = Paginator(characters_list, 9)  # Show 9 characters per page
+
+    page_number = request.GET.get('page')
+    characters = paginator.get_page(page_number)
+
+    return render(request, 'all_characters.html', {
+        'characters': characters,
+        'profile': profile,
+        'sort_by': sort_by,
+    })
+
+
 
 
 from django.shortcuts import render, get_object_or_404
@@ -212,11 +241,20 @@ def edit_item(request, item_id):
     
     return render(request, 'edit_item.html', {'form': form, 'item': item})
 
+from django.core.paginator import Paginator
+
 @login_required
 def inventory(request):
     profile = get_object_or_404(Profile, user=request.user)
     profile_items = ProfileItem.objects.filter(profile=profile)
-    return render(request, 'inventory.html', {'profile': profile, 'items': profile_items})
+    
+    # Pagination logic
+    paginator = Paginator(profile_items, 10)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    items = paginator.get_page(page_number)
+
+    return render(request, 'inventory.html', {'profile': profile, 'items': items})
+
 
 @login_required
 def shop(request):
@@ -308,3 +346,4 @@ def open_lootbox(request, item_id):
         # Handle case where the set has no items
         messages.error(request, "This lootbox contains no items.")
         return redirect('inventory')
+

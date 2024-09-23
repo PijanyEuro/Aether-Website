@@ -108,11 +108,14 @@
                         {% endif %}
                     </ul>
 
-
-                        <!-- Search form -->
-                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-                        </form>
+                    <!--Search Form-
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET" action="{% url 'main' %}">
+                        <input type="search" name="q" class="form-control" placeholder="Search..." aria-label="Search">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                    ->
+                    
+                    
 
                         <!-- User authentication dropdown -->
                         {% if user.is_authenticated %} <!-- Only show this if the user is logged in. -->

@@ -32,7 +32,7 @@
                                 <td>{{ profile_item.item.description }}</td>
                                 <td>{{ profile_item.quantity }}</td>
     
-                                    {% if profile_item.item.is_lootbox %}
+                                {% if profile_item.item.is_lootbox %}
                                     <td>
                                         <form action="{% url 'open_lootbox' profile_item.item.id %}" method="post">
                                             {% csrf_token %}
@@ -49,6 +49,33 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination Controls -->
+            <nav aria-label="Item navigation">
+                <ul class="pagination justify-content-center">
+                    {% if items.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ items.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in items.paginator.page_range %}
+                        <li class="page-item {% if items.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if items.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ items.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         {% else %}
             <p>No items found.</p>
         {% endif %}

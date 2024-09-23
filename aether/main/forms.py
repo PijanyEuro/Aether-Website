@@ -36,7 +36,7 @@ class CharacterForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={'class': 'form-control'}),
         }
         labels = {
-            'top_down_photo': 'Top Down Photo',
+            'top_down_photo': 'Character Photo ',
             'character_name': 'Character Name',
             'character_class': 'Character Class',
             'level': 'Level',
